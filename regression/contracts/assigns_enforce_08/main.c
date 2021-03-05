@@ -1,9 +1,13 @@
-void f1(int *x) __CPROVER_assigns(*x)
+void f1(int *x) __CPROVER_assigns(*x);
+
+void f2(int **y) __CPROVER_assigns(**y);
+
+void f1(int *x)
 {
   int *a = x;
   f2(&a);
 }
-void f2(int **y) __CPROVER_assigns(**y)
+void f2(int **y)
 {
   **y = 5;
 }

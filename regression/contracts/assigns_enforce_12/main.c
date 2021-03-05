@@ -1,4 +1,6 @@
-void f1(int *x) __CPROVER_assigns(*x)
+void f1(int *x) __CPROVER_assigns(*x);
+
+void f1(int *x)
 {
   int *a = x;
   *a = 5;

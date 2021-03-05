@@ -11,6 +11,7 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include "c_typecheck_base.h"
 
+#include <iostream>
 #include <sstream>
 
 #include <util/arith_tools.h>
@@ -490,6 +491,41 @@ void c_typecheck_baset::typecheck_expr_main(exprt &expr)
   else if(expr.id() == ID_C_spec_assigns || expr.id() == ID_target_list)
   {
     // already type checked
+  }
+  else if(expr.id() == ID_range)
+  {
+    // already type checked
+    exprt &lower = to_range_exprt(expr).op0();
+    exprt &upper = to_range_exprt(expr).op1();
+
+    PRECONDITION(
+      lower.id() == ID_constant || lower.id() == ID_identifier ||
+      lower.id() == ID_symbol);
+    PRECONDITION(
+      upper.id() == ID_constant || upper.id() == ID_identifier ||
+      upper.id() == ID_symbol);
+
+    const irep_idt &c_type = lower.type().get(ID_C_c_type);
+    if(c_type != ID_signed_int && c_type != ID_unsigned_int)
+    {
+      error().source_location = expr.source_location();
+      error() << "Lower bound of range should be an integer, but got: "
+              << lower.type().pretty() << eom;
+      throw 0;
+    }
+
+    const irep_idt &upper_type = upper.type().get(ID_C_c_type);
+    if(upper_type != ID_signed_int && upper_type != ID_unsigned_int)
+    {
+      error().source_location = expr.source_location();
+      error() << "Upper bound of range should be an integer, but got: "
+              << upper.pretty() << eom;
+      throw 0;
+    }
+  }
+  else if(expr.id() == ID_array_range)
+  {
+    // Already type checked
   }
   else
   {

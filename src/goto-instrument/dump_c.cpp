@@ -1470,9 +1470,7 @@ void dump_ct::cleanup_expr(exprt &expr)
     }
 
     optionalt<exprt> clean_init;
-    if(
-      ns.follow(bu.type()).id() == ID_union &&
-      bu.source_location().get_function().empty())
+    if(ns.follow(bu.type()).id() == ID_union)
     {
       clean_init = zero_initializer(bu.op().type(), source_locationt{}, ns)
                      .value_or(nil_exprt{});
